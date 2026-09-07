@@ -1,9 +1,6 @@
-# PostgreSQL Setup for the Anchor Project
+# Manual Datbase Creation
 
-This project runs PostgreSQL in a Docker container inside a GitHub Codespace / VS Code dev container.
-
-The database setup is contained in the `database/` directory.
-
+If you want to perform the step-by-step loading of the database you can follow these instructions.
 
 Unless otherwise noted, run the PostgreSQL setup commands from the `database/` directory:
 
@@ -96,7 +93,7 @@ anchor_postgres   postgres:16   postgres   Up
 The SQL scripts use the `airline` schema, so create it first:
 
 ```bash
-docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < schema.sql
+docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < load/schema.sql
 ```
 
 ---
@@ -106,7 +103,7 @@ docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < schema.sql
 Run:
 
 ```bash
-docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < stage_flights.sql
+docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < load/stage_flights.sql
 ```
 
 This creates:
@@ -124,7 +121,7 @@ The staging table stores incoming CSV values as text so the raw BTS data can be 
 Run:
 
 ```bash
-docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < flights.sql
+docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < load/flights.sql
 ```
 
 This creates:
@@ -155,7 +152,7 @@ airline | stage_flights
 From the `database/` directory:
 
 ```bash
-docker cp loading_file.csv anchor_postgres:/tmp/loading_file.csv
+docker cp load/loading_file.csv anchor_postgres:/tmp/loading_file.csv
 ```
 
 This makes the CSV available inside the PostgreSQL container.
@@ -195,7 +192,7 @@ Exit:
 Run:
 
 ```bash
-docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < load_script.sql
+docker exec -i anchor_postgres   psql -U test_user -d anchor_db   < load/load_script.sql
 ```
 
 `load_script.sql` inserts rows from `airline.stage_flights` into `airline.flights` and converts text values into the appropriate PostgreSQL types.
@@ -286,47 +283,3 @@ Start it again later:
 ```bash
 docker compose up -d
 ```
-
----
-
-## Reset the database completely
-
-To remove the PostgreSQL container and its persistent data:
-
-```bash
-docker compose down -v
-```
-
-Then recreate it:
-
-```bash
-docker compose up -d
-```
-
-The `-v` option deletes the `postgres_data` volume, so this should only be used when a complete database reset is intended.
-
-After a complete reset, rerun the setup steps for:
-
-1. `schema.sql`
-2. `stage_flights.sql`
-3. `flights.sql`
-4. CSV loading
-5. `load_script.sql`
-
----
-
-## Data loading flow
-
-```text
-BTS CSV
-   ↓
-airline.stage_flights
-   ↓
-load_script.sql
-   ↓
-airline.flights
-   ↓
-FastAPI / SQLAlchemy
-```
-
-The staging table provides a clean separation between raw BTS data and the typed table used by the API.
