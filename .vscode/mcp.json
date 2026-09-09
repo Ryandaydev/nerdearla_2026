@@ -1,0 +1,15 @@
+{
+  "servers": {
+    "air-travel": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "${workspaceFolder}/mcp",
+        "python",
+        "air_travel_server.py"
+      ]
+    }
+  }
+}
