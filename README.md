@@ -1,242 +1,203 @@
-# ✈ Anchor Project - Air Travel ✈ 
+# ✈ NERDEARLA 2026 - Async APIs and MCP with Python ✈
 
-Ryan Day's anchor project to explore and demonstrate advanced techniques around the me of data science, APIs, and increasingly LLMs.
+This repository contains the code used for my **NERDEARLA 2026** speaking session.
 
-As I build stuff here, I write about in my Tip Sheet newsletter. Subscribe here to learn how I build these anchor project components and how you can, too: [subscribe to the Tip Sheet newsletter](https://tips.handsonapibook.com/).
+The project uses air travel data to demonstrate how asynchronous Python can be used to build modern data services, including:
 
-This anchor project has some fairly advanced techniques. If you want to build foundational knowledge of FastAPI APIs for AI and Data Science in Python, I wrote a book you should read! Check it out at [Hands-on APIs for AI and Data Science: Python Development with FastAPI](https://handsonapibook.com).
+- an asynchronous REST API with FastAPI
+- an asynchronous Python SDK/client
+- an MCP server built with FastMCP
+- shared async HTTP workflows using HTTPX
+- PostgreSQL-backed data access
 
-[Versión en español](README.es.md)
+The goal of the project is not to build a complete production air travel platform. Instead, it provides a realistic example for exploring how async programming fits across an API and MCP architecture.
 
-------------------------------------------------------------------------
+As I build projects like this, I write about them in my Tip Sheet newsletter:
+[subscribe to the Tip Sheet newsletter](https://tips.handsonapibook.com/).
 
-## Major themes
-- Building and using APIs for AI and data science uses
-- Using Python asynchronous programming techniques to increase performance and reliability in all areas
+If you want foundational coverage of building FastAPI APIs for AI and data science in Python, see:
+[Hands-on APIs for AI and Data Science: Python Development with FastAPI](https://handsonapibook.com).
 
-------------------------------------------------------------------------
+---
+
+## Session Themes
+
+- Why asynchronous programming matters for API and AI workloads
+- Using `async` / `await` in Python
+- Building asynchronous endpoints with FastAPI
+- Calling APIs asynchronously with HTTPX
+- Reusing async functionality across application layers
+- Exposing functionality to AI agents through an MCP server
+- Understanding where concurrency improves performance and where it does not
+
+---
 
 ## Architecture Overview
 
-![Anchor Project Architecture](images/anchor_project_big_picture.png)
+![NERDEARLA 2026 Architecture](nerdearla_architecture.png)
 
-Here's a big picture view of all of the anchor project components.
-They show different pieces of an enterprise build around a data source and Python frameworks.
+The project follows a layered architecture built around a shared air travel data source.
 
-The **Air Travel SDK** serves as the central
-integration layer, allowing multiple consumers to reuse the same
-functionality while minimizing duplicated code.
+The **Flights API** provides asynchronous REST endpoints over the underlying data.
 
-------------------------------------------------------------------------
-## Technologies used
+The **Air Travel SDK** provides reusable async client functionality for consumers of the API.
 
-- Python - pretty much all the code is in Python
-- FastAPI - API development platform
-- PostgreSQL and Supabase - Cloud PosgreSQL database
-- FastMCP - framework for building MCP servers and clients
-- Typer - Library to build command line interface (CLI)
-- HTTPX - Async library for API calls.
-- Scikit-Learn - Python framework for ML model training
-- ONNX runtime - Open framework for hosting ML models for inference
-- Juypter Notebooks - Every data scientists friend
+The **Air Travel MCP Server** reuses that SDK so AI coding agents and assistants can access the same functionality through MCP tools without duplicating API integration logic.
 
-------------------------------------------------------------------------
+---
 
-## Major themes
+## Technologies Used
+
+- **Python** - primary programming language
+- **FastAPI** - asynchronous API framework
+- **HTTPX** - asynchronous HTTP client
+- **FastMCP** - framework for building MCP servers
+- **PostgreSQL** - relational database
+- **asyncpg** - asynchronous PostgreSQL driver
+- **SQLAlchemy** - database access layer
+- **Docker** - local PostgreSQL environment
+
+---
+
 # Core Components
-
-## Air Travel CLI
-
-A command-line interface designed for developers, analysts, and AI
-coding agents.
-
-The CLI provides a convenient way to search and retrieve flight
-information directly from the terminal while leveraging the shared SDK
-underneath.
-
-**Repository path:**
-
-[cli/](./cli)
-
-------------------------------------------------------------------------
-
-## Air Travel SDK
-
-The central Python package used throughout the project.
-
-The SDK abstracts the underlying API implementation and provides a
-consistent interface for multiple consumers.
-
-It is used by:
-
--   The Air Travel CLI
--   The MCP Server
--   Jupyter notebooks
--   Streamlit and Gradio applications [FUTURE]
-
-**Repository path:**
-
-[sdk/](./sdk)
-
-------------------------------------------------------------------------
 
 ## Flights API
 
-A FastAPI application that exposes flight information through REST
-endpoints.
+A FastAPI application that exposes air travel data through REST endpoints.
 
-The API acts as the primary access layer for flight data and is consumed
-by the SDK.
+The API demonstrates asynchronous request handling and async database access.
 
 **Repository path:**
 
-[flights-api/](./flights-api)
+[`flights-api/`](./flights-api)
 
-------------------------------------------------------------------------
+---
 
-## Air Travel Database
+## Air Travel SDK
 
-A PostgreSQL/Supabase-backed datastore containing processed airline
-operational data.
+A reusable Python client for the Flights API.
 
-The Flights API retrieves flight information from this database layer.
+The async client demonstrates how applications can call REST APIs without blocking while waiting for network I/O.
+
+The SDK also provides a shared integration layer that can be reused by other project components.
 
 **Repository path:**
 
-[postgres/](./postgres)
+[`sdk/`](./sdk)
 
-------------------------------------------------------------------------
+---
 
 ## Air Travel MCP Server
 
-An MCP (Model Context Protocol) server that enables AI assistants and
-coding agents to interact with the air travel ecosystem through
-standardized tooling.
+An MCP (Model Context Protocol) server built with FastMCP.
 
-Rather than implementing its own database logic, the MCP server reuses
-the shared SDK.
+The MCP server enables AI assistants and coding agents to interact with the air travel API through MCP tools.
 
-**Repository path:**
-
-[mcp/](./mcp)
-
-------------------------------------------------------------------------
-
-## Ad Hoc Analytics
-
-Jupyter notebooks used for exploratory analysis, experimentation, and
-prototyping.
-
-These notebooks demonstrate how analysts can work with the same SDK used
-elsewhere in the project.
-
-Typical activities include:
-
--   Data exploration
--   Feature engineering
--   Hypothesis testing
--   Experimentation
+Rather than duplicating REST API integration logic, the MCP server reuses the shared async SDK.
 
 **Repository path:**
 
-[llm/](./llm)
+[`mcp/`](./mcp)
 
-------------------------------------------------------------------------
+---
 
-## ML model training and API model inference
+## PostgreSQL Database
 
-Jupyter notebook demonstrating ML model traing and building an API for inference.
+A PostgreSQL database containing airline operational data used by the Flights API.
 
-The model trained in this example is pretty naive, so don't look too closely.
-
-But the approach to training and serving inference via API is a solid framework.
+The database provides a realistic data source for demonstrating asynchronous database access.
 
 **Repository path:**
 
-[ml-models/](./ml-models)
+[`database/`](./database)
 
-[inference-api/](./inference-api)
+---
 
-------------------------------------------------------------------------
+# Async Architecture
 
-## Data Applications [FUTURE]
+A simplified request flow looks like this:
 
-Interactive applications built with frameworks such as Streamlit or
-Gradio.
+```text
+AI Agent
+   |
+   v
+MCP Server
+   |
+   v
+Async SDK / HTTPX
+   |
+   v
+FastAPI
+   |
+   v
+Async SQLAlchemy / asyncpg
+   |
+   v
+PostgreSQL
+```
 
-These applications will provide end-user experiences while relying on the SDK
-to retrieve data.
+Each layer can spend time waiting on I/O:
 
-Potential use cases include:
+- the MCP server waits for API responses
+- the SDK waits for HTTP responses
+- FastAPI waits for database operations
+- the database driver waits for PostgreSQL
 
--   Flight search applications
--   Dashboards
--   Demonstrations
--   AI-assisted experiences
+Using asynchronous Python allows the application to perform other work while those I/O operations are waiting.
 
-------------------------------------------------------------------------
+That makes this architecture useful for demonstrating where async programming can improve throughput and resource utilization.
+
+---
 
 # Data Source
 
 The project uses publicly available airline operational data from the
-U.S. Department of Transportation's Bureau of Transportation Statistics
-(BTS).
+U.S. Department of Transportation's Bureau of Transportation Statistics (BTS).
 
 BTS Data Portal:
 
 https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FGK&QO_fu146_anzr=b0-gvzr
 
-------------------------------------------------------------------------
-
-# Other Anchor Project Pieces
-
-## data/
-
-Supporting datasets, ingestion assets, and intermediate artifacts used
-throughout the project.
-
-------------------------------------------------------------------------
-
-## llm/
-
-Experiments involving large language models, prompt engineering, and AI
-workflows.
-
-------------------------------------------------------------------------
-
-## postgres/
-
-Database infrastructure, schema definitions, and supporting scripts.
-
-------------------------------------------------------------------------
+---
 
 # Getting Started
 
 Clone the repository:
 
-    git clone https://github.com/Ryandaydev/anchor_project_air_travel.git
+```bash
+git clone <repository-url>
+cd <repository-name>
+```
 
-Explore one of the major entry points:
+The major areas to explore are:
 
--   `sdk/` for reusable client functionality
--   `cli/` for command-line workflows
--   `flights-api/` for the REST API implementation
--   `mcp/` for AI agent integrations
+- `flights-api/` - asynchronous FastAPI service
+- `sdk/` - reusable async Python client
+- `mcp/` - FastMCP server
+- `database/` - PostgreSQL setup and data
 
-------------------------------------------------------------------------
+Each component contains its own configuration and supporting files.
 
-# Design Philosophy
+---
 
-The Anchor Project emphasizes several architectural principles:
+# What This Repository Demonstrates
 
--   **One SDK, many consumers** -- shared functionality minimizes
-    duplicated logic.
--   **API-first development** -- services communicate through
-    well-defined interfaces.
--   **AI-ready architecture** -- MCP servers and agent workflows are
-    treated as first-class consumers.
--   **Composable components** -- applications can evolve independently
-    while sharing common foundations.
--   **Educational transparency** -- the repository demonstrates
-    practical patterns for modern data, API, and AI engineering
-    projects.
+The main idea behind the NERDEARLA 2026 demo is that **async is an architectural technique, not just an API syntax feature**.
+
+The same asynchronous programming model can be applied across multiple layers:
+
+- database access
+- REST API endpoints
+- HTTP clients
+- SDKs
+- MCP tools
+
+By keeping those layers asynchronous, applications can efficiently handle workloads that spend significant time waiting on network or database I/O.
+
+---
+
+# About the Larger Anchor Project
+
+This repository was derived from my broader **Air Travel Anchor Project**, which I use to explore and demonstrate data science, API, and AI engineering techniques.
+
+For NERDEARLA 2026, the repository is intentionally narrowed to focus on asynchronous Python and its use in building an API and MCP server.

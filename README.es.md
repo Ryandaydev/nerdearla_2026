@@ -1,234 +1,203 @@
-# ✈ Anchor Project - Air Travel ✈
+# ✈ NERDEARLA 2026 - APIs asíncronas y MCP con Python ✈
 
-El proyecto ancla de Ryan Day para explorar y demostrar técnicas avanzadas relacionadas con la ciencia de datos, las APIs y, cada vez más, los LLM.
+Este repositorio contiene el código utilizado en mi charla de **NERDEARLA 2026**.
 
-A medida que construyo cosas aquí, escribo sobre ellas en mi boletín Tip Sheet. Suscríbete aquí para aprender cómo construyo estos componentes del proyecto ancla y cómo tú también puedes hacerlo: [subscribe to the Tip Sheet newsletter](https://tips.handsonapibook.com/).
+El proyecto utiliza datos de viajes aéreos para demostrar cómo se puede usar Python asíncrono para construir servicios de datos modernos, incluyendo:
 
-Este proyecto ancla incluye algunas técnicas bastante avanzadas. Si deseas desarrollar conocimientos fundamentales sobre APIs FastAPI para IA y Ciencia de Datos en Python, ¡he escrito un libro que deberías leer! Descúbrelo en [Hands-on APIs for AI and Data Science: Python Development with FastAPI](https://handsonapibook.com).
+- una API REST asíncrona con FastAPI
+- un SDK/cliente asíncrono en Python
+- un servidor MCP construido con FastMCP
+- flujos HTTP asíncronos compartidos usando HTTPX
+- acceso a datos respaldado por PostgreSQL
 
-[English readme](README.md)
+El objetivo del proyecto no es construir una plataforma completa de viajes aéreos lista para producción. En cambio, proporciona un ejemplo realista para explorar cómo encaja la programación asíncrona en una arquitectura de API y MCP.
+
+Mientras desarrollo proyectos como este, escribo sobre ellos en mi newsletter Tip Sheet:
+[suscríbete a la newsletter Tip Sheet](https://tips.handsonapibook.com/).
+
+Si quieres una introducción a la creación de APIs con FastAPI para IA y ciencia de datos en Python, consulta:
+[Hands-on APIs for AI and Data Science: Python Development with FastAPI](https://handsonapibook.com).
 
 ---
 
-## Temas principales
+## Temas de la charla
 
-* Construcción y uso de APIs para aplicaciones de IA y ciencia de datos
-* Uso de técnicas de programación asíncrona en Python para aumentar el rendimiento y la confiabilidad en todas las áreas
+- Por qué la programación asíncrona es importante para cargas de trabajo de APIs e IA
+- Cómo usar `async` / `await` en Python
+- Cómo construir endpoints asíncronos con FastAPI
+- Cómo llamar APIs de forma asíncrona con HTTPX
+- Cómo reutilizar funcionalidad asíncrona entre diferentes capas de una aplicación
+- Cómo exponer funcionalidad a agentes de IA mediante un servidor MCP
+- Cómo entender dónde la concurrencia mejora el rendimiento y dónde no
 
 ---
 
-## Visión general de la arquitectura
+## Descripción general de la arquitectura
 
-![Anchor Project Architecture](images/anchor_project_big_picture.png)
+![Arquitectura de NERDEARLA 2026](nerdearla_architecture.png)
 
-Aquí se muestra una visión general de todos los componentes del proyecto ancla. Representan diferentes piezas de una solución empresarial construida alrededor de una fuente de datos y frameworks de Python.
+El proyecto sigue una arquitectura por capas construida alrededor de una fuente compartida de datos de viajes aéreos.
 
-El **Air Travel SDK** sirve como la capa central de integración, permitiendo que múltiples consumidores reutilicen la misma funcionalidad mientras se minimiza la duplicación de código.
+La **Flights API** proporciona endpoints REST asíncronos sobre los datos subyacentes.
+
+El **Air Travel SDK** proporciona funcionalidad reutilizable de cliente asíncrono para los consumidores de la API.
+
+El **Air Travel MCP Server** reutiliza ese SDK para que los agentes de programación y asistentes de IA puedan acceder a la misma funcionalidad mediante herramientas MCP sin duplicar la lógica de integración con la API.
 
 ---
 
 ## Tecnologías utilizadas
 
-* Python - prácticamente todo el código está escrito en Python
-* FastAPI - plataforma para el desarrollo de APIs
-* PostgreSQL y Supabase - base de datos PostgreSQL en la nube
-* FastMCP - framework para construir servidores y clientes MCP
-* Typer - biblioteca para construir interfaces de línea de comandos (CLI)
-* HTTPX - biblioteca asíncrona para llamadas a APIs
-* Scikit-Learn - framework de Python para el entrenamiento de modelos de aprendizaje automático
-* ONNX Runtime - framework abierto para alojar modelos de ML para inferencia
-* Jupyter Notebooks - el mejor amigo de todo científico de datos
+- **Python** - lenguaje de programación principal
+- **FastAPI** - framework para APIs asíncronas
+- **HTTPX** - cliente HTTP asíncrono
+- **FastMCP** - framework para construir servidores MCP
+- **PostgreSQL** - base de datos relacional
+- **asyncpg** - driver asíncrono para PostgreSQL
+- **SQLAlchemy** - capa de acceso a datos
+- **Docker** - entorno local de PostgreSQL
 
 ---
 
-## Temas principales
-
 # Componentes principales
 
-## Air Travel CLI
+## Flights API
 
-Una interfaz de línea de comandos diseñada para desarrolladores, analistas y agentes de programación basados en IA.
+Una aplicación FastAPI que expone datos de viajes aéreos mediante endpoints REST.
 
-La CLI proporciona una forma conveniente de buscar y recuperar información de vuelos directamente desde la terminal, aprovechando el SDK compartido que se encuentra debajo.
+La API demuestra el manejo asíncrono de solicitudes y el acceso asíncrono a la base de datos.
 
 **Ruta en el repositorio:**
 
-[cli/](./cli)
+[`flights-api/`](./flights-api)
 
 ---
 
 ## Air Travel SDK
 
-El paquete central de Python utilizado en todo el proyecto.
+Un cliente Python reutilizable para la Flights API.
 
-El SDK abstrae la implementación subyacente de la API y proporciona una interfaz coherente para múltiples consumidores.
+El cliente asíncrono demuestra cómo las aplicaciones pueden llamar APIs REST sin bloquear la ejecución mientras esperan operaciones de red.
 
-Es utilizado por:
-
-* La Air Travel CLI
-* El servidor MCP
-* Jupyter Notebooks
-* Aplicaciones Streamlit y Gradio [FUTURE]
+El SDK también proporciona una capa de integración compartida que puede reutilizarse en otros componentes del proyecto.
 
 **Ruta en el repositorio:**
 
-[sdk/](./sdk)
-
----
-
-## Flights API
-
-Una aplicación FastAPI que expone información de vuelos mediante endpoints REST.
-
-La API actúa como la capa principal de acceso a los datos de vuelos y es consumida por el SDK.
-
-**Ruta en el repositorio:**
-
-[flights-api/](./flights-api)
-
----
-
-## Air Travel Database
-
-Un almacén de datos respaldado por PostgreSQL/Supabase que contiene datos operativos procesados de aerolíneas.
-
-La Flights API recupera la información de vuelos desde esta capa de base de datos.
-
-**Ruta en el repositorio:**
-
-[postgres/](./postgres)
+[`sdk/`](./sdk)
 
 ---
 
 ## Air Travel MCP Server
 
-Un servidor MCP (Model Context Protocol) que permite a asistentes de IA y agentes de programación interactuar con el ecosistema Air Travel mediante herramientas estandarizadas.
+Un servidor MCP (Model Context Protocol) construido con FastMCP.
 
-En lugar de implementar su propia lógica de base de datos, el servidor MCP reutiliza el SDK compartido.
+El servidor MCP permite que asistentes y agentes de programación con IA interactúen con la API de viajes aéreos mediante herramientas MCP.
+
+En lugar de duplicar la lógica de integración con la API REST, el servidor MCP reutiliza el SDK asíncrono compartido.
 
 **Ruta en el repositorio:**
 
-[mcp/](./mcp)
+[`mcp/`](./mcp)
 
 ---
 
-## Análisis ad hoc
+## Base de datos PostgreSQL
 
-Jupyter Notebooks utilizados para análisis exploratorio, experimentación y creación de prototipos.
+Una base de datos PostgreSQL que contiene datos operacionales de aerolíneas utilizados por la Flights API.
 
-Estos cuadernos demuestran cómo los analistas pueden trabajar con el mismo SDK utilizado en otras partes del proyecto.
-
-Las actividades típicas incluyen:
-
-* Exploración de datos
-* Ingeniería de características
-* Pruebas de hipótesis
-* Experimentación
+La base de datos proporciona una fuente de datos realista para demostrar el acceso asíncrono a bases de datos.
 
 **Ruta en el repositorio:**
 
-[llm/](./llm)
+[`database/`](./database)
 
 ---
 
-## Entrenamiento de modelos de ML e inferencia mediante API
+# Arquitectura asíncrona
 
-Jupyter Notebooks que demuestran el entrenamiento de modelos de aprendizaje automático y la construcción de una API para inferencia.
+Un flujo de solicitud simplificado se ve así:
 
-El modelo entrenado en este ejemplo es bastante simple, así que no lo analices demasiado en detalle.
+```text
+Agente de IA
+   |
+   v
+Servidor MCP
+   |
+   v
+SDK asíncrono / HTTPX
+   |
+   v
+FastAPI
+   |
+   v
+SQLAlchemy asíncrono / asyncpg
+   |
+   v
+PostgreSQL
+```
 
-Sin embargo, el enfoque para entrenar modelos y ofrecer inferencia mediante una API constituye un marco sólido.
+Cada capa puede pasar tiempo esperando operaciones de entrada/salida:
 
-**Ruta en el repositorio:**
+- el servidor MCP espera respuestas de la API
+- el SDK espera respuestas HTTP
+- FastAPI espera operaciones de base de datos
+- el driver de base de datos espera a PostgreSQL
 
-[ml-models/](./ml-models)
+El uso de Python asíncrono permite que la aplicación realice otro trabajo mientras esas operaciones de entrada/salida están esperando.
 
----
-
-## Aplicaciones de datos [FUTURE]
-
-Aplicaciones interactivas construidas con frameworks como Streamlit o Gradio.
-
-Estas aplicaciones proporcionan experiencias para los usuarios finales mientras utilizan el SDK para recuperar datos.
-
-Los posibles casos de uso incluyen:
-
-* Aplicaciones de búsqueda de vuelos
-* Paneles de control
-* Demostraciones
-* Experiencias asistidas por IA
-
-**Ruta en el repositorio:**
-
-[llm/](./llm)
+Esto hace que esta arquitectura sea útil para demostrar dónde la programación asíncrona puede mejorar el throughput y la utilización de recursos.
 
 ---
 
 # Fuente de datos
 
-El proyecto utiliza datos operativos de aerolíneas disponibles públicamente del Bureau of Transportation Statistics (BTS) del Departamento de Transporte de los Estados Unidos.
+El proyecto utiliza datos públicos sobre operaciones de aerolíneas del
+Bureau of Transportation Statistics (BTS) del Departamento de Transporte de Estados Unidos.
 
-Portal de datos BTS:
+Portal de datos de BTS:
 
 https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FGK&QO_fu146_anzr=b0-gvzr
 
 ---
 
-# Otros componentes del Anchor Project
-
-## data/
-
-Conjuntos de datos de apoyo, recursos de ingestión y artefactos intermedios utilizados en todo el proyecto.
-
----
-
-## inference-api/
-
-Servicios relacionados con la inferencia de modelos de aprendizaje automático y la experimentación con despliegues.
-
----
-
-## llm/
-
-Experimentos relacionados con modelos de lenguaje de gran tamaño, ingeniería de prompts y flujos de trabajo de IA.
-
----
-
-## ml-models/
-
-Recursos para el entrenamiento, evaluación y experimentación con modelos de aprendizaje automático.
-
----
-
-## postgres/
-
-Infraestructura de base de datos, definiciones de esquemas y scripts de soporte.
-
----
-
-# Primeros pasos
+# Cómo empezar
 
 Clona el repositorio:
 
-```
-git clone https://github.com/Ryandaydev/anchor_project_air_travel.git
+```bash
+git clone <repository-url>
+cd <repository-name>
 ```
 
-Explora uno de los principales puntos de entrada:
+Las principales áreas para explorar son:
 
-* `sdk/` para funcionalidades reutilizables del cliente
-* `cli/` para flujos de trabajo desde la línea de comandos
-* `flights-api/` para la implementación de la API REST
-* `mcp/` para integraciones con agentes de IA
+- `flights-api/` - servicio FastAPI asíncrono
+- `sdk/` - cliente Python asíncrono reutilizable
+- `mcp/` - servidor FastMCP
+- `database/` - configuración y datos de PostgreSQL
+
+Cada componente contiene su propia configuración y archivos de soporte.
 
 ---
 
-# Filosofía de diseño
+# Qué demuestra este repositorio
 
-El Anchor Project enfatiza varios principios arquitectónicos:
+La idea principal de la demostración de NERDEARLA 2026 es que **async es una técnica de arquitectura, no solamente una característica de sintaxis de una API**.
 
-* **Un SDK, muchos consumidores** -- la funcionalidad compartida minimiza la duplicación de lógica.
-* **Desarrollo centrado en APIs** -- los servicios se comunican mediante interfaces bien definidas.
-* **Arquitectura preparada para IA** -- los servidores MCP y los flujos de trabajo con agentes se tratan como consumidores de primera clase.
-* **Componentes componibles** -- las aplicaciones pueden evolucionar de forma independiente mientras comparten fundamentos comunes.
-* **Transparencia educativa** -- el repositorio demuestra patrones prácticos para proyectos modernos de ingeniería de datos, APIs e IA.
+El mismo modelo de programación asíncrona puede aplicarse en múltiples capas:
+
+- acceso a bases de datos
+- endpoints REST
+- clientes HTTP
+- SDKs
+- herramientas MCP
+
+Al mantener estas capas de forma asíncrona, las aplicaciones pueden manejar de manera eficiente cargas de trabajo que pasan una cantidad significativa de tiempo esperando operaciones de red o de base de datos.
+
+---
+
+# Acerca del Anchor Project original
+
+Este repositorio se deriva de mi proyecto más amplio **Air Travel Anchor Project**, que utilizo para explorar y demostrar técnicas de ciencia de datos, APIs e ingeniería de IA.
+
+Para NERDEARLA 2026, el repositorio se ha reducido intencionalmente para enfocarse en Python asíncrono y su uso para construir una API y un servidor MCP.
