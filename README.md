@@ -1,5 +1,7 @@
 # ✈ NERDEARLA 2026 - Async APIs and MCP with Python ✈
 
+English | [Español](README.es.md)
+
 This repository contains the code used for my **NERDEARLA 2026** speaking session.
 
 The project uses air travel data to demonstrate how asynchronous Python can be used to build modern data services, including:

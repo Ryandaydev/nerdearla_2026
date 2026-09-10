@@ -1,5 +1,7 @@
 # ✈ NERDEARLA 2026 - APIs asíncronas y MCP con Python ✈
 
+[English](README.md) | Español
+
 Este repositorio contiene el código utilizado en mi charla de **NERDEARLA 2026**.
 
 El proyecto utiliza datos de viajes aéreos para demostrar cómo se puede usar Python asíncrono para construir servicios de datos modernos, incluyendo:
