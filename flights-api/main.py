@@ -1,3 +1,5 @@
+
+#region imports
 from datetime import date
 
 from fastapi import Depends, FastAPI, Query
@@ -6,7 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import crud
 from database import get_db
 from schemas import Flight
+#endregion
 
+
+#region setup
 api_description = """
 The Air Travel API provides read-only access to historical U.S. flight data.
 
@@ -35,7 +40,9 @@ app = FastAPI(
     version="0.1",
 )
 
+#endregion
 
+#region endpoints
 @app.get(
     "/",
     summary="Check to see if the Flights API is running",
@@ -71,3 +78,5 @@ async def search_flights(
     )
 
     return flights
+
+#endregion

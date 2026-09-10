@@ -3,8 +3,6 @@
 FastMCP Air Travel Server
 """
 
-#region imports
-
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
@@ -16,11 +14,6 @@ from air_travel import (
     AirTravelRequestError,
     AsyncAirTravelClient,
 )
-
-#endregion
-
-
-#region setup
 
 logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -44,13 +37,13 @@ async def app_lifespan(
         await client.aclose()
         client = None
 
-# create the FastMCP server instance
+
 mcp = FastMCP(
     "Air Travel Server",
     lifespan=app_lifespan,
 )
 
-# 
+
 def get_client() -> AsyncAirTravelClient:
     """Return the initialized asynchronous API client."""
     if client is None:
@@ -58,9 +51,6 @@ def get_client() -> AsyncAirTravelClient:
 
     return client
 
-#endregion
-
-#region tools
 
 @mcp.tool
 async def get_flights(
@@ -164,17 +154,6 @@ def get_airline_codes(
 
     return airline_codes
 
-#endregion
 
-# region Resources
-
-# endregion
-
-# region Prompts
-
-# endregion
-
-#region entrypoint
 if __name__ == "__main__":
     mcp.run()
-#endregion

@@ -1,8 +1,10 @@
+#region imports
 from datetime import date
 
 from pydantic import BaseModel, ConfigDict
+#endregion
 
-
+#region schemas
 class FlightBase(BaseModel):
     flight_date: date
     iata_code_marketing_airline: str | None = None
@@ -33,3 +35,5 @@ class Flight(FlightBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+#endregion
