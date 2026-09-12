@@ -36,4 +36,10 @@ class Flight(FlightBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+# https://www.bts.gov/topics/airlines-and-airports/airline-codes
+class Airline(BaseModel):
+    carrier: str
+    carrier_name: str
+
+
 #endregion
