@@ -1,12 +1,20 @@
+#region imports
 from urllib.parse import urljoin
 
 import httpx
 
+
 from air_travel.exceptions import AirTravelAPIError, AirTravelRequestError
+
+#endregion
+
+#region setup
 
 DEFAULT_BASE_URL = "https://api.airtravelsource.com/"
 
+#endregion
 
+#region client
 class AsyncAirTravelClient:
     """Asynchronous client for the Air Travel API."""
 
@@ -106,3 +114,5 @@ class AsyncAirTravelClient:
 
         except httpx.HTTPError as e:
             raise AirTravelRequestError(str(e)) from e
+
+#endregion
