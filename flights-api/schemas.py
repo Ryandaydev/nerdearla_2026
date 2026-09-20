@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 #region schemas
 class FlightBase(BaseModel):
+    id: int
     flight_date: date
     iata_code_marketing_airline: str | None = None
     flight_number_marketing_airline: str | None = None
@@ -29,10 +30,6 @@ class FlightBase(BaseModel):
     operating_airline: str | None = None
     iata_code_operating_airline: str | None = None
     tail_number: str | None = None
-
-
-class Flight(FlightBase):
-    id: int
 
     model_config = ConfigDict(from_attributes=True)
 
