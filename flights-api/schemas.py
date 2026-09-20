@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 #endregion
 
 #region schemas
-class FlightBase(BaseModel):
+class Flight(BaseModel):
     id: int
     flight_date: date
     iata_code_marketing_airline: str | None = None
