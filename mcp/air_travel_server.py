@@ -23,9 +23,11 @@ from air_travel import (
 
 #region setup
 
+
 logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+API_BASE_URL = "http://127.0.0.1:8000/"
 
 client: AsyncAirTravelClient | None = None
 
@@ -37,7 +39,7 @@ async def app_lifespan(
     """Create and close the shared asynchronous API client."""
     global client
 
-    client = AsyncAirTravelClient("http://127.0.0.1:8000")
+    client = AsyncAirTravelClient(base_url=API_BASE_URL)
 
     try:
         yield {}
