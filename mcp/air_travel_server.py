@@ -8,6 +8,7 @@ FastMCP Air Travel Server
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
+import json
 
 from fastmcp import FastMCP
 
@@ -22,9 +23,11 @@ from air_travel import (
 
 #region setup
 
+
 logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+API_BASE_URL = "http://127.0.0.1:8000/"
 
 client: AsyncAirTravelClient | None = None
 
@@ -36,7 +39,7 @@ async def app_lifespan(
     """Create and close the shared asynchronous API client."""
     global client
 
-    client = AsyncAirTravelClient()
+    client = AsyncAirTravelClient(base_url=API_BASE_URL)
 
     try:
         yield {}
@@ -117,6 +120,19 @@ async def get_flights(
 
     return "\n".join(flights)
 
+
+@mcp.tool
+async def get_airline_codes() -> str:
+    """
+    Get the list of airline carrier codes and names.
+
+    Use this tool to translate a common airline name into the carrier code
+    needed by get_flights. For example, use it to find that
+    "United Airlines" corresponds to "UA" before calling get_flights.
+    """
+    data = await get_client().airlines()
+
+    return json.dumps(data)
 
 @mcp.tool
 async def health_check() -> str:

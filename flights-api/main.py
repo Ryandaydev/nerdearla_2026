@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import crud
 from database import get_db
-from schemas import Flight
+from schemas import Flight, Airline
 #endregion
 
 
@@ -39,6 +39,14 @@ app = FastAPI(
     description=api_description,
     version="0.1",
 )
+
+AIRLINE_CODES = [
+    {"carrier": "AA", "carrier_name": "American Airlines"},
+    {"carrier": "DL", "carrier_name": "Delta Air Lines"},
+    {"carrier": "UA", "carrier_name": "United Airlines"},
+    {"carrier": "WN", "carrier_name": "Southwest Airlines"},
+]
+
 
 #endregion
 
@@ -78,5 +86,15 @@ async def search_flights(
     )
 
     return flights
+
+@app.get(
+        "/v0/airlines", 
+        description="""Return list of airlines with carrier code and carrier name.""",
+        operation_id="v0_get_airlines",
+        tags=["airline"],
+        response_model=list[Airline])
+async def get_airlines():
+    return AIRLINE_CODES
+
 
 #endregion
